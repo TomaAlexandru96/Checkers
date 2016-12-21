@@ -16,6 +16,7 @@
 		2260E9DF1E0ADDC600C62400 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2260E9DD1E0ADDC600C62400 /* Main.storyboard */; };
 		2260E9E11E0ADDC600C62400 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2260E9E01E0ADDC600C62400 /* Assets.xcassets */; };
 		2260E9E41E0ADDC600C62400 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2260E9E21E0ADDC600C62400 /* LaunchScreen.storyboard */; };
+		227CFBF21E0B106C005B6EEE /* Board.sks in Resources */ = {isa = PBXBuildFile; fileRef = 227CFBF11E0B106C005B6EEE /* Board.sks */; };
 		22A6BF011E0AFBC100DA0E04 /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A6BF001E0AFBC100DA0E04 /* Button.swift */; };
 /* End PBXBuildFile section */
 
@@ -31,6 +32,7 @@
 		2260E9E01E0ADDC600C62400 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2260E9E31E0ADDC600C62400 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2260E9E51E0ADDC600C62400 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		227CFBF11E0B106C005B6EEE /* Board.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Board.sks; sourceTree = "<group>"; };
 		22A6BF001E0AFBC100DA0E04 /* Button.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Button.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -63,6 +65,7 @@
 				2260E9DD1E0ADDC600C62400 /* Main.storyboard */,
 				2260E9E21E0ADDC600C62400 /* LaunchScreen.storyboard */,
 				2260E9E01E0ADDC600C62400 /* Assets.xcassets */,
+				227CFBF11E0B106C005B6EEE /* Board.sks */,
 			);
 			name = Assets;
 			sourceTree = "<group>";
@@ -171,6 +174,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				227CFBF21E0B106C005B6EEE /* Board.sks in Resources */,
 				2260E9DF1E0ADDC600C62400 /* Main.storyboard in Resources */,
 				221A8D331E0AFA5700CADD1D /* MenuScene.sks in Resources */,
 				2260E9D61E0ADDC600C62400 /* GameScene.sks in Resources */,
