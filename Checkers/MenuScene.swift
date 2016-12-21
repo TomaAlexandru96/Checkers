@@ -10,7 +10,18 @@ import Foundation
 import SpriteKit
 
 class MenuScene: SKScene {
+    var singlePlayerButton: Button?
+    var multiplayerButton: Button?
+    
     override func didMove(to view: SKView) {
-        print("Here");
+        if let button = childNode(withName: "SinglePlayerButton") as? Button {
+            button.setAction{view.changeSceneTo(sceneName: "GameScene")}
+            singlePlayerButton = button
+        }
+        
+        if let button = childNode(withName: "MultiplayerButton") as? Button {
+            button.setAction{view.changeSceneTo(sceneName: "GameScene")}
+            multiplayerButton = button
+        }
     }
 }
