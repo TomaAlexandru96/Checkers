@@ -10,14 +10,32 @@ import Foundation
 import SpriteKit
 
 class Button: SKSpriteNode {
-    var action: () -> Void = {fatalError("action not assigned")}
+    var action: (AnyObject) -> Void = {sender in fatalError("action not assigned")}
 
-    func setAction(to action: @escaping () -> Void) -> Void {
+    func setAction(to action: @escaping (AnyObject) -> Void) -> Void {
         self.action = action
         isUserInteractionEnabled = true
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        action()
+        guard let _ = touches.first else {
+            return
+        }
+        alpha = 0.7
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let touch = touches.first else {
+            return
+        }
+        
+        let position = touch.location(in: scene!)
+        alpha = 1
+        
+        guard scene!.nodes(at: position).contains(self) else {
+            return
+        }
+        
+        action(self)
     }
 }

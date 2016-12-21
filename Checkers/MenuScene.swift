@@ -15,12 +15,12 @@ class MenuScene: SKScene {
     
     override func didMove(to view: SKView) {
         if let button = childNode(withName: "SinglePlayerButton") as? Button {
-            button.setAction{view.changeSceneTo(sceneName: "GameScene")}
+            button.setAction{sender in view.changeSceneTo(sceneName: "GameScene")}
             singlePlayerButton = button
         }
         
         if let button = childNode(withName: "MultiplayerButton") as? Button {
-            button.setAction{view.changeSceneTo(sceneName: "GameScene")}
+            button.setAction{sender in view.changeSceneTo(sceneName: "GameScene")}
             multiplayerButton = button
         }
     }
