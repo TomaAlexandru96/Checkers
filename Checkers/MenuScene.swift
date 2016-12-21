@@ -14,14 +14,17 @@ class MenuScene: SKScene {
     var multiplayerButton: Button?
     
     override func didMove(to view: SKView) {
-        if let button = childNode(withName: "SinglePlayerButton") as? Button {
-            button.setAction{sender in view.changeSceneTo(sceneName: "GameScene")}
-            singlePlayerButton = button
+        guard let button = childNode(withName: "SinglePlayerButton") as? Button else {
+            fatalError("SinglePlayerButton couldn't be loaded")
         }
         
-        if let button = childNode(withName: "MultiplayerButton") as? Button {
-            button.setAction{sender in view.changeSceneTo(sceneName: "GameScene")}
-            multiplayerButton = button
+        button.setAction{sender in view.changeSceneTo(sceneName: "GameScene")}
+        singlePlayerButton = button
+        
+        guard let button2 = childNode(withName: "MultiplayerButton") as? Button else {
+            fatalError("MultilayerButton couldn't be loaded")
         }
+        button2.setAction{sender in view.changeSceneTo(sceneName: "GameScene")}
+        multiplayerButton = button
     }
 }

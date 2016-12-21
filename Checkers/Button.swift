@@ -10,7 +10,8 @@ import Foundation
 import SpriteKit
 
 class Button: SKSpriteNode {
-    var action: (AnyObject) -> Void = {sender in fatalError("action not assigned")}
+    private var action: (AnyObject) -> Void = {sender in fatalError("action not assigned")}
+    var withAlpha: Bool = true
 
     func setAction(to action: @escaping (AnyObject) -> Void) -> Void {
         self.action = action
@@ -21,7 +22,9 @@ class Button: SKSpriteNode {
         guard let _ = touches.first else {
             return
         }
-        alpha = 0.7
+        if withAlpha {
+            alpha = 0.7
+        }
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -30,7 +33,9 @@ class Button: SKSpriteNode {
         }
         
         let position = touch.location(in: scene!)
-        alpha = 1
+        if withAlpha {
+            alpha = 1
+        }
         
         guard scene!.nodes(at: position).contains(self) else {
             return

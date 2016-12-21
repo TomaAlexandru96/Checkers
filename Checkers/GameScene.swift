@@ -9,12 +9,30 @@
 import SpriteKit
 import GameplayKit
 
-class GameScene: SKScene {
-    var board: SKTileMapNode?
+class GameScene: SKScene, GameControllerDelegate {
+    private var game: GameModel!
+    private var gameView: GameView!
     
     override func didMove(to view: SKView) {
-        if let board = childNode(withName: "Board Border/Board") as? SKTileMapNode {
-            self.board = board
-        }
+        gameView = GameView(scene: self)
+        game = GameModel(controller: self, name1: "Player1", name2: "Player2")
+        gameView.setBoard(to_configuration: game.getBoard().getGrid())
+        gameView.setPlayerNames()
+    }
+    
+    func tappedTile(posX x: Int, posY y: Int) -> Void {
+        print(x.description + " " + y.description)
+    }
+    
+    override func update(_ currentTime: TimeInterval) {
+        gameView.update(currentTime)
+    }
+    
+    func getPlayer1() -> Player {
+        return game.getPlayer1()
+    }
+    
+    func getPlayer2() -> Player {
+        return game.getPlayer2()
     }
 }

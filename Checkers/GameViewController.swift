@@ -33,7 +33,7 @@ class GameViewController: UIViewController {
         super.viewDidLoad()
         
         if let view = self.view as! SKView? {
-            view.changeSceneTo(sceneName: "MenuScene")
+            view.changeSceneTo(sceneName: "GameScene")
         }
     }
 
