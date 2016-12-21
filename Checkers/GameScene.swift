@@ -10,6 +10,11 @@ import SpriteKit
 import GameplayKit
 
 class GameScene: SKScene {
+    var board: SKTileMapNode?
+    
     override func didMove(to view: SKView) {
+        if let board = childNode(withName: "Board Border/Board") as? SKTileMapNode {
+            self.board = board
+        }
     }
 }
