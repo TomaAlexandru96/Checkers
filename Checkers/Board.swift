@@ -26,18 +26,22 @@ class Board {
                 if (y % 2 == x % 2) {
                     if (y <= 3) {
                         // place white
-                        grid[x][y] = Piece(position: Tile(x: x, y: y), player: first)
+                        grid[x][y] = Piece(position: Tile(y: y, x: x), player: first)
                         first.incrementNumberOfPiceces()
                     }
                     
                     if (y >= 6) {
                         // place red
-                        grid[x][y] = Piece(position: Tile(x: x, y: y), player: second)
+                        grid[x][y] = Piece(position: Tile(y: y, x: x), player: second)
                         second.incrementNumberOfPiceces()
                     }
                 }
             }
         }
+    }
+    
+    func forEachTile(apply: (Piece?) -> Void) {
+        grid.forEach({line in line.forEach({tile in apply(tile)})})
     }
     
     func getGrid() -> [[Piece?]] {

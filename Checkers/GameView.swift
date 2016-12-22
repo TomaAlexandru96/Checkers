@@ -13,6 +13,7 @@ class GameView {
     static let selectColor: UIColor = UIColor.blue
     static let availableColor: UIColor = UIColor.green
     static let captureColor: UIColor = UIColor.red
+    
     private let scene: GameScene
     private let player1Pieces: SKLabelNode
     private let player2Pieces: SKLabelNode
@@ -68,7 +69,7 @@ class GameView {
                 let tapRange = Button(color: UIColor.clear, size: board.tileSize)
                 tapRange.position = pos
                 tapRange.zPosition = 3
-                tapRange.setAction { sender in self.scene.tappedTile(tile: Tile(x: x, y: y)) }
+                tapRange.setAction { sender in self.scene.tappedTile(tile: Tile(y: y, x: x)) }
                 scene.addChild(tapRange)
                 
                 let iTile: SKSpriteNode = SKSpriteNode(color: UIColor.clear, size: board.tileSize)
@@ -91,13 +92,13 @@ class GameView {
     func clearTiles() {
         for y in (0..<board.numberOfRows).reversed() {
             for x in 0..<board.numberOfColumns {
-                getInformativeTile(tile: Tile(x: x, y: y)).color = UIColor.clear
+                getInformativeTile(tile: Tile(y: y, x: x)).color = UIColor.clear
             }
         }
     }
     
-    func setBoard(to_configuration config: [[Piece?]]) {
-        config.forEach({line in line.forEach({piece in
+    func setBoard(to_configuration config: Board) {
+        config.forEachTile {piece in
             guard let piece = piece else {
                 return
             }
@@ -122,8 +123,7 @@ class GameView {
             node.zPosition = 2
             node.position = board.centerOfTile(atColumn: piecePos.x, row: piecePos.y)
             scene.addChild(node)
-            })
-        })
+        }
     }
     
     func update(_ currentTime: TimeInterval) {

@@ -14,12 +14,18 @@ class GameModel {
     private var player1: Player
     private var player2: Player
     private var moveStack: [Move] = []
+    private var turn: Player
     
     init(controller: GameControllerDelegate, name1: String, name2: String) {
         self.controller = controller
         self.player1 = Player(name: name1, isFirst: true)
         self.player2 = Player(name: name2, isFirst: false)
         self.board = Board(first: player1, second: player2)
+        self.turn = player1
+    }
+    
+    func changeTurn() {
+        turn = turn == player1 ? player2 : player1
     }
     
     func getPlayer1() -> Player {

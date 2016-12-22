@@ -12,7 +12,7 @@ class Tile {
     let x: Int
     let y: Int
     
-    init(x: Int, y: Int) {
+    init(y: Int, x: Int) {
         self.x = x
         self.y = y
     }
@@ -38,5 +38,15 @@ class Piece {
     
     func isPieceKing() -> Bool {
         return isKing
+    }
+    
+    func setKingTo(state: Bool) {
+        isKing = state
+    }
+    
+    func copy() -> Piece {
+        let p = Piece(position: position, player: player)
+        p.setKingTo(state: isKing)
+        return p
     }
 }

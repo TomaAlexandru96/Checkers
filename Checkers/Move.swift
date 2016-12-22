@@ -9,5 +9,13 @@
 import Foundation
 
 class Move {
-    private let trail: [Tile]! = nil
+    let trail: [Tile]
+    let captures: [Tile]
+    let piece: Piece
+    
+    init(trail: [Tile], captures: [Tile], piece: Piece) {
+        self.trail = trail
+        self.captures = captures
+        self.piece = piece.copy()
+    }
 }

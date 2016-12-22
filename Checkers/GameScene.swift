@@ -16,7 +16,7 @@ class GameScene: SKScene, GameControllerDelegate {
     override func didMove(to view: SKView) {
         gameView = GameView(scene: self)
         game = GameModel(controller: self, name1: "Player1", name2: "Player2")
-        gameView.setBoard(to_configuration: game.getBoard().getGrid())
+        gameView.setBoard(to_configuration: game.getBoard())
         gameView.setPlayerNames()
     }
     

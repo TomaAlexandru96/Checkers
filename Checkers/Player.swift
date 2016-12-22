@@ -8,7 +8,7 @@
 
 import Foundation
 
-class Player {
+class Player: Equatable {
     private var name: String
     private var isFirst: Bool
     private var numberOfPieces: Int = 0
@@ -37,4 +37,8 @@ class Player {
     func getName() -> String {
         return name
     }
+}
+
+func ==(this: Player, other: Player) -> Bool{
+    return this.isPlayerFirst() == other.isPlayerFirst()
 }
