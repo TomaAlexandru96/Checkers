@@ -105,7 +105,7 @@ class GameView {
             
             var texture: SKTexture
             
-            if (piece.getPlayer().isPlayerFirst()) {
+            if (piece.getPlayer().isWhite()) {
                 if (piece.isPieceKing()) {
                     texture = cachedTextures["white_king_checker"]!
                 } else {

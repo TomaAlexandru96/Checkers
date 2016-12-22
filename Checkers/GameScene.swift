@@ -9,9 +9,11 @@
 import SpriteKit
 import GameplayKit
 
-class GameScene: SKScene, GameControllerDelegate {
+class GameScene: SKScene {
     private var game: GameModel!
     private var gameView: GameView!
+    private var pieceSelected: Bool = false
+    private var currentPiece: Piece? = nil
     
     override func didMove(to view: SKView) {
         gameView = GameView(scene: self)
@@ -20,9 +22,21 @@ class GameScene: SKScene, GameControllerDelegate {
         gameView.setPlayerNames()
     }
     
+    // TODO
     func tappedTile(tile: Tile) -> Void {
         gameView.clearTiles()
-        gameView.highlight(tile: tile, to: GameView.selectColor)
+        
+        if (pieceSelected) {
+            pieceSelected = false
+        } else {
+            guard game.getBoard().isOccupied(tile: tile, by: game.getCurrentTurn()) else {
+                return
+            }
+            
+            currentPiece = game.getBoard().getPiece(from: tile)!
+            pieceSelected = true
+            gameView.highlight(tile: tile, to: GameView.selectColor)
+        }
     }
     
     override func update(_ currentTime: TimeInterval) {

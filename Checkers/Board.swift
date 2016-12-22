@@ -26,13 +26,13 @@ class Board {
                 if (y % 2 == x % 2) {
                     if (y <= 3) {
                         // place white
-                        grid[x][y] = Piece(position: Tile(y: y, x: x), player: first)
+                        grid[y][x] = Piece(board: self, position: Tile(y: y, x: x), player: first)
                         first.incrementNumberOfPiceces()
                     }
                     
                     if (y >= 6) {
                         // place red
-                        grid[x][y] = Piece(position: Tile(y: y, x: x), player: second)
+                        grid[y][x] = Piece(board: self, position: Tile(y: y, x: x), player: second)
                         second.incrementNumberOfPiceces()
                     }
                 }
@@ -44,7 +44,36 @@ class Board {
         grid.forEach({line in line.forEach({tile in apply(tile)})})
     }
     
-    func getGrid() -> [[Piece?]] {
-        return grid
+    func isTileInBounds(tile: Tile) -> Bool {
+        return tile.x >= 0 && tile.x < Board.BOARD_SIZE_X &&
+                tile.y >= 0 && tile.y < Board.BOARD_SIZE_Y
+    }
+    
+    func getPiece(from: Tile) -> Piece? {
+        guard isTileInBounds(tile: from) else {
+            return nil
+        }
+        
+        return grid[from.y][from.x]
+    }
+    
+    func setPiece(from: Tile, to: Piece?) {
+        guard isTileInBounds(tile: from) else {
+            fatalError("Not in bounds")
+        }
+        
+        grid[from.y][from.x] = to
+    }
+    
+    func isOccupied(tile: Tile) -> Bool {
+        return getPiece(from: tile) != nil
+    }
+    
+    func isOccupied(tile: Tile, by: Player) -> Bool {
+        guard let piece = getPiece(from: tile) else {
+            return false
+        }
+        
+        return by == piece.getPlayer()
     }
 }

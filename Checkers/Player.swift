@@ -10,12 +10,12 @@ import Foundation
 
 class Player: Equatable {
     private var name: String
-    private var isFirst: Bool
+    private var white: Bool
     private var numberOfPieces: Int = 0
     
-    init(name: String, isFirst: Bool) {
+    init(name: String, white: Bool) {
         self.name = name
-        self.isFirst = isFirst
+        self.white = white
     }
     
     func incrementNumberOfPiceces() -> Void {
@@ -30,8 +30,8 @@ class Player: Equatable {
         return numberOfPieces
     }
     
-    func isPlayerFirst() -> Bool {
-        return isFirst
+    func isWhite() -> Bool {
+        return white
     }
     
     func getName() -> String {
@@ -40,5 +40,5 @@ class Player: Equatable {
 }
 
 func ==(this: Player, other: Player) -> Bool{
-    return this.isPlayerFirst() == other.isPlayerFirst()
+    return this.isWhite() == other.isWhite()
 }
