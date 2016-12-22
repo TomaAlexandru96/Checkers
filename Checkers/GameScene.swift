@@ -20,8 +20,9 @@ class GameScene: SKScene, GameControllerDelegate {
         gameView.setPlayerNames()
     }
     
-    func tappedTile(posX x: Int, posY y: Int) -> Void {
-        print(x.description + " " + y.description)
+    func tappedTile(tile: Tile) -> Void {
+        gameView.clearTiles()
+        gameView.highlight(tile: tile, to: GameView.selectColor)
     }
     
     override func update(_ currentTime: TimeInterval) {

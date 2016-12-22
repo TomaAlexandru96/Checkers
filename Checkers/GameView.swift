@@ -10,6 +10,9 @@ import Foundation
 import SpriteKit
 
 class GameView {
+    static let selectColor: UIColor = UIColor.blue
+    static let availableColor: UIColor = UIColor.green
+    static let captureColor: UIColor = UIColor.red
     private let scene: GameScene
     private let player1Pieces: SKLabelNode
     private let player2Pieces: SKLabelNode
@@ -64,9 +67,31 @@ class GameView {
                 let pos = board.centerOfTile(atColumn: x, row: y)
                 let tapRange = Button(color: UIColor.clear, size: board.tileSize)
                 tapRange.position = pos
-                tapRange.zPosition = 2
-                tapRange.setAction { sender in self.scene.tappedTile(posX: x, posY: y) }
+                tapRange.zPosition = 3
+                tapRange.setAction { sender in self.scene.tappedTile(tile: Tile(x: x, y: y)) }
                 scene.addChild(tapRange)
+                
+                let iTile: SKSpriteNode = SKSpriteNode(color: UIColor.clear, size: board.tileSize)
+                iTile.position = pos
+                iTile.zPosition = 1
+                iTile.name = y.description + " " + x.description + " info"
+                scene.addChild(iTile)
+            }
+        }
+    }
+    
+    private func getInformativeTile(tile: Tile) -> SKSpriteNode {
+        return scene.childNode(withName: tile.y.description + " " + tile.x.description + " info") as! SKSpriteNode
+    }
+    
+    func highlight(tile: Tile, to: UIColor) {
+        getInformativeTile(tile: tile).color = to
+    }
+    
+    func clearTiles() {
+        for y in (0..<board.numberOfRows).reversed() {
+            for x in 0..<board.numberOfColumns {
+                getInformativeTile(tile: Tile(x: x, y: y)).color = UIColor.clear
             }
         }
     }
@@ -94,6 +119,7 @@ class GameView {
             }
             let piecePos = piece.getPosition()
             let node = SKSpriteNode(texture: texture, size: board.tileSize)
+            node.zPosition = 2
             node.position = board.centerOfTile(atColumn: piecePos.x, row: piecePos.y)
             scene.addChild(node)
             })
