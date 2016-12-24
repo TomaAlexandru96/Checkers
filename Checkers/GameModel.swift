@@ -15,6 +15,7 @@ class GameModel {
     private var player2: Player
     private var moveStack: [Move] = []
     private var turn: Player
+    private var currentMove: MoveSequence? = nil
     
     init(controller: GameScene, name1: String, name2: String) {
         self.controller = controller
@@ -31,19 +32,69 @@ class GameModel {
     func hasEnded() -> Bool {
         var ended: Bool = true
         
-        board.forEachTile { piece in
-            guard let piece = piece else {
-                return
-            }
-            
+        board.forEachPiece { piece in
             if piece.getPlayer() == turn {
                 if ended {
-                   ended = !piece.getAllPossibleMoves().isEmpty
+                    ended = piece.hasMoves()
                 }
             }
         }
         
         return ended
+    }
+    
+    func tileSelected(tile: Tile) -> Void {
+        guard !hasEnded() else {
+            return
+        }
+        
+        if board.isOccupied(tile: tile, by: turn) && board.getPiece(from: tile)!.hasMoves() {
+            currentMove = MoveSequence(piece: board.getPiece(from: tile)!)
+            informControllerMoveSelection()
+            return
+        }
+        
+        guard let currentMove = currentMove else {
+            return
+        }
+        
+        guard currentMove.isValidTile(tile: tile) else {
+            cancelMove()
+            return
+        }
+        
+        informControllerMoveSelection()
+        guard let move = currentMove.place(tile: tile) else {
+            return
+        }
+        make(move: move)
+        self.currentMove = nil
+    }
+    
+    func make(move: Move) -> Void {
+        moveStack.append(move)
+        move.piece.move(move: move)
+        move.captures.forEach({tile in
+            board.remove(tile: tile)
+        })
+        controller.informMove(move: move)
+        if hasEnded() {
+            controller.gameHasEnded()
+        }
+    }
+    
+    func informControllerMoveSelection() -> Void {
+        guard let currentMove = currentMove else {
+            return
+        }
+        controller.highlight(tile: currentMove.getPiecePosition(), to: GameView.selectColor)
+        currentMove.getAvailablePositions().forEach({controller.highlight(tile: $0, to: GameView.availableColor)})
+        currentMove.getCaptures().forEach({controller.highlight(tile: $0, to: GameView.captureColor)})
+    }
+    
+    func cancelMove() {
+        currentMove?.cancel()
+        currentMove = nil
     }
     
     func getPlayer1() -> Player {

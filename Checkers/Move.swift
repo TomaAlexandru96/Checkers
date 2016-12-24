@@ -33,4 +33,29 @@ class Move {
     func getLastPosition() -> Tile {
         return trail.last!
     }
+    
+    func iterator() -> MoveIterator {
+        return MoveIterator(move: self)
+    }
+}
+
+class MoveIterator {
+    private let move: Move
+    private var count = 1
+    
+    init(move: Move) {
+        self.move = move
+    }
+    
+    func next() -> Tile! {
+        if (!hasNext()) {
+            return nil
+        }
+        count += 1
+        return move.trail[count - 1]
+    }
+    
+    func hasNext() -> Bool {
+        return count < move.trail.count
+    }
 }

@@ -8,12 +8,16 @@
 
 import Foundation
 
-class Board {
+class Board: CustomStringConvertible {
     static let BOARD_SIZE_X = 10
     static let BOARD_SIZE_Y = 10
     private var grid: [[Piece?]]
+    private let first: Player
+    private let second: Player
     
     init(first: Player, second: Player) {
+        self.first = first
+        self.second = second
         self.grid = []
         setStartGrid(first: first, second: second)
     }
@@ -40,8 +44,13 @@ class Board {
         }
     }
     
-    func forEachTile(apply: (Piece?) -> Void) {
-        grid.forEach({line in line.forEach({tile in apply(tile)})})
+    func forEachPiece(apply: (Piece) -> Void) {
+        grid.forEach({line in line.forEach({piece in
+            guard let piece = piece else {
+                return
+            }
+            apply(piece)
+        })})
     }
     
     func isTileInBounds(tile: Tile) -> Bool {
@@ -75,5 +84,25 @@ class Board {
         }
         
         return by == piece.getPlayer()
+    }
+    
+    func remove(tile: Tile) -> Void {
+        guard isTileInBounds(tile: tile) else {
+            fatalError()
+        }
+        
+        grid[tile.y][tile.x] = nil
+    }
+    
+    var description: String {
+        get {
+            var desc: [[Int]] = [[Int]](repeating: [Int](repeating: 0, count: Board.BOARD_SIZE_X), count: Board.BOARD_SIZE_Y)
+            
+            self.forEachPiece(apply: {piece in
+                desc[piece.getPosition().y][piece.getPosition().x] = piece.getPlayer().isWhite() ? 1 : 2
+            })
+            
+            return desc.description
+        }
     }
 }

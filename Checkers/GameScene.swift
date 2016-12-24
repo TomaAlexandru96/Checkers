@@ -12,31 +12,27 @@ import GameplayKit
 class GameScene: SKScene {
     private var game: GameModel!
     private var gameView: GameView!
-    private var pieceSelected: Bool = false
-    private var currentPiece: Piece? = nil
+    private var resetSpace: SKSpriteNode!
     
     override func didMove(to view: SKView) {
         gameView = GameView(scene: self)
         game = GameModel(controller: self, name1: "Player1", name2: "Player2")
         gameView.setBoard(to_configuration: game.getBoard())
+        gameView.setPlayerCounts()
         gameView.setPlayerNames()
+        guard let resetSpace = childNode(withName: "ResetSpace") as? SKSpriteNode else {
+            fatalError("ResetSpace not loaded")
+        }
+        self.resetSpace = resetSpace
     }
-    
-    // TODO
+
     func tappedTile(tile: Tile) -> Void {
         gameView.clearTiles()
-        
-        if (pieceSelected) {
-            pieceSelected = false
-        } else {
-            guard game.getBoard().isOccupied(tile: tile, by: game.getCurrentTurn()) else {
-                return
-            }
-            
-            currentPiece = game.getBoard().getPiece(from: tile)!
-            pieceSelected = true
-            gameView.highlight(tile: tile, to: GameView.selectColor)
-        }
+        game.tileSelected(tile: tile)
+    }
+    
+    func highlight(tile: Tile, to: UIColor) -> Void {
+        gameView.highlight(tile: tile, to: to)
     }
     
     override func update(_ currentTime: TimeInterval) {
@@ -49,5 +45,26 @@ class GameScene: SKScene {
     
     func getPlayer2() -> Player {
         return game.getPlayer2()
+    }
+    
+    func gameHasEnded() -> Void {
+        
+    }
+    
+    func informMove(move: Move) -> Void {
+        gameView.make(move: move)
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let first = touches.first else {
+            return
+        }
+        
+        let nodesUnder = nodes(at: first.location(in: self))
+        
+        if nodesUnder.contains(resetSpace) {
+            gameView.clearTiles()
+            game.cancelMove()
+        }
     }
 }

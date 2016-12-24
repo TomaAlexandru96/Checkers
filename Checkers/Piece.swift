@@ -8,7 +8,7 @@
 
 import Foundation
 
-class Tile {
+class Tile: Equatable, Hashable {
     let x: Int
     let y: Int
     
@@ -16,13 +16,23 @@ class Tile {
         self.x = x
         self.y = y
     }
+    
+    var hashValue: Int {
+        get {
+            return x * 13 + y * 113
+        }
+    }
 }
 
-class Piece {
-    private var position: Tile
-    private var player: Player
-    private var isKing: Bool = false
-    private var board: Board
+func ==(this: Tile, other: Tile) -> Bool {
+    return this.x == other.x && this.y == other.y
+}
+
+class Piece: Hashable, Equatable {
+    fileprivate var position: Tile
+    fileprivate var player: Player
+    fileprivate var isKing: Bool = false
+    fileprivate var board: Board
     
     init(board: Board, position: Tile, player: Player) {
         self.position = position
@@ -61,7 +71,7 @@ class Piece {
         } else {
             for pair in getForwardMovementVectors() {
                 let next = Tile(y: position.y + pair.0, x: position.x + pair.1)
-                if !board.isOccupied(tile: next) {
+                if !board.isOccupied(tile: next) && board.isTileInBounds(tile: next) {
                     allMoves.append(Move(trail: [position, next], captures: [], piece: self))
                 }
             }
@@ -70,13 +80,21 @@ class Piece {
         return allMoves
     }
     
-    func movePiece(move: Move) {
+    func hasMoves() -> Bool {
+        return !getAllPossibleMoves().isEmpty
+    }
+    
+    func move(move: Move) {
         move.captures.forEach { tile in
             board.setPiece(from: tile, to: nil)
         }
-        board.setPiece(from: move.getInitialPosition(), to: nil)
-        position = Tile(y: move.getLastPosition().y, x: move.getLastPosition().x)
-        board.setPiece(from: position, to: self)
+        movePiece(to: move.getLastPosition())
+    }
+    
+    func movePiece(to: Tile) {
+        board.setPiece(from: position, to: nil)
+        board.setPiece(from: to, to: self)
+        position = to
     }
     
     private func getForwardMovementVectors() -> [(Int, Int)] {
@@ -88,4 +106,16 @@ class Piece {
         
         return [(y, -1), (y, 1)]
     }
+    
+    var hashValue: Int {
+        get {
+            return position.hashValue + player.hashValue + isKing.hashValue
+        }
+    }
+}
+
+func ==(this: Piece, other: Piece) -> Bool {
+    return this.position == other.position &&
+            this.player == other.player &&
+            this.isKing == other.isKing
 }

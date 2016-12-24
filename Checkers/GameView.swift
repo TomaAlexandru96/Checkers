@@ -20,12 +20,8 @@ class GameView {
     private let player1Label: SKLabelNode
     private let player2Label: SKLabelNode
     private var board: SKTileMapNode!
-    private let cachedTextures: [String:SKTexture] = [
-        "red_checker":SKTexture(imageNamed: "red_checker"),
-        "red_king_checker":SKTexture(imageNamed: "red_king_checker"),
-        "white_checker":SKTexture(imageNamed: "white_checker"),
-        "white_king_checker":SKTexture(imageNamed: "white_king_checker")
-    ]
+    private var tiles: [[ViewTile?]] = []
+    private var pieces: [Piece: ViewPiece] = [:]
     
     init(scene: GameScene) {
         self.scene = scene
@@ -33,25 +29,21 @@ class GameView {
         guard let player1Label = scene.childNode(withName: "Player1") as? SKLabelNode else {
             fatalError("Player1 label couldn't be loaded")
         }
-        
         self.player1Label = player1Label
         
         guard let player2Label = scene.childNode(withName: "Player2") as? SKLabelNode else {
             fatalError("Player2 label couldn't be loaded")
         }
-        
         self.player2Label = player2Label
         
         guard let player1Pieces = scene.childNode(withName: "Player1/Player1PiecesCount") as? SKLabelNode else {
             fatalError("Player1/Player1PiecesCount couldn't be loaded")
         }
-        
         self.player1Pieces = player1Pieces
         
         guard let player2Pieces = scene.childNode(withName: "Player2/Player2PiecesCount") as? SKLabelNode else {
             fatalError("Player2/Player2PiecesCount couldn't be loaded")
         }
-        
         self.player2Pieces = player2Pieces
         initializeTaps()
     }
@@ -62,72 +54,62 @@ class GameView {
         }
         
         self.board = board
+        self.tiles = [[ViewTile?]](repeating: [ViewTile?](repeating: nil, count: Board.BOARD_SIZE_X), count: Board.BOARD_SIZE_Y)
         
         for y in (0..<board.numberOfRows).reversed() {
             for x in 0..<board.numberOfColumns {
-                let pos = board.centerOfTile(atColumn: x, row: y)
-                let tapRange = Button(color: UIColor.clear, size: board.tileSize)
-                tapRange.position = pos
-                tapRange.zPosition = 3
-                tapRange.setAction { sender in self.scene.tappedTile(tile: Tile(y: y, x: x)) }
-                scene.addChild(tapRange)
-                
-                let iTile: SKSpriteNode = SKSpriteNode(color: UIColor.clear, size: board.tileSize)
-                iTile.position = pos
-                iTile.zPosition = 1
-                iTile.name = y.description + " " + x.description + " info"
-                scene.addChild(iTile)
+                let tile: Tile = Tile(y: y, x: x)
+                let viewTile = ViewTile(action: ViewActionTile(position: tile, board: board, scene: scene), info: ViewInfoTile(position: tile, board: board))
+                tiles[y][x] = viewTile
+                scene.addChild(viewTile.action)
+                scene.addChild(viewTile.info)
             }
         }
     }
     
-    private func getInformativeTile(tile: Tile) -> SKSpriteNode {
-        return scene.childNode(withName: tile.y.description + " " + tile.x.description + " info") as! SKSpriteNode
+    private func getViewTile(tile: Tile) -> ViewTile {
+        guard let viewTile = tiles[tile.y][tile.x] else {
+            fatalError()
+        }
+        
+        return viewTile
+    }
+    
+    private func getViewTile(y: Int, x: Int) -> ViewTile {
+        return getViewTile(tile: Tile(y: y, x: x))
     }
     
     func highlight(tile: Tile, to: UIColor) {
-        getInformativeTile(tile: tile).color = to
+        getViewTile(tile: tile).info.color = to
     }
     
     func clearTiles() {
         for y in (0..<board.numberOfRows).reversed() {
             for x in 0..<board.numberOfColumns {
-                getInformativeTile(tile: Tile(y: y, x: x)).color = UIColor.clear
+                getViewTile(y: y, x: x).info.color = UIColor.clear
             }
         }
     }
     
     func setBoard(to_configuration config: Board) {
-        config.forEachTile {piece in
-            guard let piece = piece else {
-                return
-            }
-            
-            var texture: SKTexture
-            
-            if (piece.getPlayer().isWhite()) {
-                if (piece.isPieceKing()) {
-                    texture = cachedTextures["white_king_checker"]!
-                } else {
-                    texture = cachedTextures["white_checker"]!
-                }
-            } else {
-                if (piece.isPieceKing()) {
-                    texture = cachedTextures["red_king_checker"]!
-                } else {
-                    texture = cachedTextures["red_checker"]!
-                }
-            }
-            let piecePos = piece.getPosition()
-            let node = SKSpriteNode(texture: texture, size: board.tileSize)
-            node.zPosition = 2
-            node.position = board.centerOfTile(atColumn: piecePos.x, row: piecePos.y)
-            scene.addChild(node)
+        config.forEachPiece {piece in
+            let viewPiece = ViewPiece(gameView: self, piece: piece, board: board)
+            self.pieces[piece] = viewPiece
+            scene.addChild(viewPiece)
         }
     }
     
-    func update(_ currentTime: TimeInterval) {
+    // TODO
+    func remove(piece: Piece) -> Void {
+    }
+    
+    func make(move: Move) -> Void {
         setPlayerCounts()
+        clearTiles()
+        pieces[move.piece]?.move(to: move)
+    }
+    
+    func update(_ currentTime: TimeInterval) {
     }
     
     func setPlayerCounts() {

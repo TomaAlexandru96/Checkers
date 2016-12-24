@@ -8,7 +8,7 @@
 
 import Foundation
 
-class Player: Equatable {
+class Player: Equatable, Hashable {
     private var name: String
     private var white: Bool
     private var numberOfPieces: Int = 0
@@ -36,6 +36,12 @@ class Player: Equatable {
     
     func getName() -> String {
         return name
+    }
+    
+    var hashValue: Int {
+        get {
+            return name.hashValue + white.hashValue + numberOfPieces.hashValue
+        }
     }
 }
 
